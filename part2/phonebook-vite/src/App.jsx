@@ -7,7 +7,7 @@ import Persons from './components/Persons'
 
 
 const App = () => {
-  const [persons, setPersons] = useState([]) 
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
@@ -18,9 +18,17 @@ const App = () => {
     personService
       .getAll()
       .then(initialPersons => {
-      setPersons(initialPersons)
+        setPersons(initialPersons)
       })
   }, [])
+
+  const setMessageAndReset = (message, color, timeout) => {
+    setMessage(message)
+    setMessageColor(color)
+    setTimeout(() => {
+      setMessage(null)
+    }, timeout)
+  }
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -31,26 +39,18 @@ const App = () => {
 
     if (persons.some(o => o.name === newName)) {
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
-        const person = persons.find(n => n.name === newName)  
+        const person = persons.find(n => n.name === newName)
         personService
           .update(person.id, personObject)
           .then(returnedPerson => {
             setPersons(persons.map(n => n.id !== person.id ? n : returnedPerson))
             setNewName('')
             setNewNumber('')
-            setMessage(`Updated number for ${newName}`)
-            setMessageColor('green')
-            setTimeout(() => {
-              setMessage(null)
-            }, 3000)
+            setMessageAndReset(`Updated number for ${newName}`, 'green', 3000)
           })
           .catch(error => {
-            setMessage(`Information for ${newName} has already been removed from server`)
-            setMessageColor('red')
-            setTimeout(() => {
-              setMessage(null)
-            }, 3000)
-            setPersons(persons.filter(o => o.name !== newName))
+            console.log(error.response.data)
+            setMessageAndReset(error.response.data.error, 'red', 3000)
           })
       }
     } else {
@@ -60,13 +60,13 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
-          setMessage(`Added ${newName}`)
-          setMessageColor('green')
-          setTimeout(() => {
-            setMessage(null)
-          }, 3000)
+          setMessageAndReset(`Added ${newName}`, 'green', 3000)
         })
-    } 
+        .catch(error => {
+          console.log(error.response.data)
+          setMessageAndReset(error.response.data.error, 'red', 3000)
+        })
+    }
   }
 
   const removePerson = (id) => {
@@ -75,11 +75,7 @@ const App = () => {
       personService
         .remove(id)
         .then(setPersons(persons.filter(n => n.id !== id)))
-          setMessage(`Deleted ${person.name}`)
-          setMessageColor('green')
-          setTimeout(() => {
-            setMessage(null)
-          }, 3000)
+      setMessageAndReset(`Deleted ${person.name}`, 'green', 3000)
     }
   }
 
@@ -115,7 +111,7 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons persons={personsToShow} removePerson={removePerson} />      
+      <Persons persons={personsToShow} removePerson={removePerson} />
     </div>
   )
 }
