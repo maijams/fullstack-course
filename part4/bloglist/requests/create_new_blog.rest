@@ -1,6 +1,6 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QzIiwiaWQiOiI2NWE4ZjY4NDNmYzZiYjI2NWNmNTE2ZDgiLCJpYXQiOjE3MDU1NzIwMDl9.rlOwGVpiHhGPh5SEGVq13HJkgoRmORCB6REAB63x9ic
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QzIiwiaWQiOiI2NWE4ZjY4NDNmYzZiYjI2NWNmNTE2ZDgiLCJpYXQiOjE3MDU1ODkyODh9.l5Rb97NnYKocZVumSFmk9f5dy5UPjYGZFD02hjllj6E
 
 {
   "title": "React patterns",
