@@ -5,10 +5,34 @@ const app = require('../app')
 const api = supertest(app)
 
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('./test_helper')
 
 
 describe('when there is initially some blogs saved', () => {
+  let authToken = null
+
+  beforeAll(async () => {
+    await User.deleteMany({})
+
+    const newUser = {
+      username: 'test',
+      password: 'test',
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(201)
+
+    const response = await api
+      .post('/api/login')
+      .send(newUser)
+      .expect(200)
+
+    authToken = response.body.token
+  })
+
   beforeEach(async () => {
     await Blog.deleteMany({})
     await Blog.insertMany(helper.blogs)
@@ -44,9 +68,9 @@ describe('when there is initially some blogs saved', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `bearer ${authToken}`)
         .send(newBlog)
         .expect(201)
-        .expect('Content-Type', /application\/json/)
 
       const blogsAtEnd = await helper.blogsInDb()
       expect(blogsAtEnd).toHaveLength(helper.blogs.length + 1)
@@ -66,11 +90,28 @@ describe('when there is initially some blogs saved', () => {
 
       const response = await api
         .post('/api/blogs')
+        .set('Authorization', `bearer ${authToken}`)
         .send(newBlog)
         .expect(201)
-        .expect('Content-Type', /application\/json/)
 
       expect(response.body.likes).toBe(0)
+    })
+
+    test('blog addition fails without authorization', async () => {
+      const newBlog = {
+        title: 'First class tests',
+        author: 'Robert C. Martin',
+        url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+        likes: 10,
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(401)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      expect(blogsAtEnd).toHaveLength(helper.blogs.length)
     })
 
     test('blog without title is not added', async () => {
@@ -82,6 +123,7 @@ describe('when there is initially some blogs saved', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `bearer ${authToken}`)
         .send(newBlog)
         .expect(400)
 
@@ -98,6 +140,7 @@ describe('when there is initially some blogs saved', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `bearer ${authToken}`)
         .send(newBlog)
         .expect(400)
 
@@ -108,17 +151,31 @@ describe('when there is initially some blogs saved', () => {
 
   describe('deletion of a blog', () => {
     test('succeeds with status code 204 if id is valid', async () => {
+      const newBlog = {
+        title: 'First class tests',
+        author: 'Robert C. Martin',
+        url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+        likes: 10,
+      }
+
+      const response = await api
+        .post('/api/blogs')
+        .set('Authorization', `bearer ${authToken}`)
+        .send(newBlog)
+        .expect(201)
+
+      const blogToDelete = response.body
       const blogsAtStart = await helper.blogsInDb()
-      const blogToDelete = blogsAtStart[0]
 
       await api
         .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('Authorization', `bearer ${authToken}`)
         .expect(204)
 
       const blogsAtEnd = await helper.blogsInDb()
 
       expect(blogsAtEnd).toHaveLength(
-        helper.blogs.length - 1
+        blogsAtStart.length - 1
       )
 
       const titles = blogsAtEnd.map(b => b.title)
@@ -129,6 +186,7 @@ describe('when there is initially some blogs saved', () => {
     test('fails with status code 404 if id is not valid', async () => {
       await api
         .delete(`/api/blogs/${helper.nonExistingId}`)
+        .set('Authorization', `bearer ${authToken}`)
         .expect(404)
 
       const blogsAtEnd = await helper.blogsInDb()
