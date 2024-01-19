@@ -50,7 +50,7 @@ describe('favorite blog', () => {
     expect(result).toEqual(oneBlog)
   })
 
-  test('of a bigger list is that with most likes', () => {
+  test('of a bigger list is the blog with most likes', () => {
     const result = listHelper.favoriteBlog(helper.blogs)
     expect(result).toEqual(fav_blog)
   })
@@ -74,8 +74,32 @@ describe('most blogs', () => {
     expect(result).toEqual({ author: oneBlog.author, blogs: 1 })
   })
 
-  test('of a bigger list is that with most blogs', () => {
+  test('of a bigger list is the author with most blogs', () => {
     const result = listHelper.mostBlogs(helper.blogs)
     expect(result).toEqual({ author: 'Robert C. Martin', blogs: 3 })
+  })
+})
+
+
+describe('most likes', () => {
+  const oneBlog = {
+    title: 'Go To Statement Considered Harmful',
+    author: 'Edsger W. Dijkstra',
+    likes: 5
+  }
+
+  test('of empty list is empty object', () => {
+    const result = listHelper.mostLikes([])
+    expect(result).toEqual({})
+  })
+
+  test('when list has only one blog', () => {
+    const result = listHelper.mostLikes(helper.listWithOneBlog)
+    expect(result).toEqual({ author: oneBlog.author, likes: oneBlog.likes })
+  })
+
+  test('of a bigger list is the author with most likes', () => {
+    const result = listHelper.mostLikes(helper.blogs)
+    expect(result).toEqual({ author: 'Edsger W. Dijkstra', likes: 27 })
   })
 })
