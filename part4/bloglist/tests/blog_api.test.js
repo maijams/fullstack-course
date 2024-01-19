@@ -60,7 +60,7 @@ describe('when there is initially some blogs saved', () => {
   describe('additon of a new blog', () => {
     test('a valid blog can be added', async () => {
       const newBlog = {
-        title: 'First class tests',
+        title: 'First class',
         author: 'Robert C. Martin',
         url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
         likes: 10,
@@ -83,7 +83,7 @@ describe('when there is initially some blogs saved', () => {
 
     test('likes is initialized to 0 if not defined', async () => {
       const newBlog = {
-        title: 'First class tests',
+        title: 'First class',
         author: 'Robert C. Martin',
         url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
       }
@@ -99,7 +99,7 @@ describe('when there is initially some blogs saved', () => {
 
     test('blog addition fails without authorization', async () => {
       const newBlog = {
-        title: 'First class tests',
+        title: 'First class',
         author: 'Robert C. Martin',
         url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
         likes: 10,
@@ -133,7 +133,7 @@ describe('when there is initially some blogs saved', () => {
 
     test('blog without url is not added', async () => {
       const newBlog = {
-        title: 'First class tests',
+        title: 'First class',
         author: 'Robert C. Martin',
         likes: 10,
       }
@@ -152,7 +152,7 @@ describe('when there is initially some blogs saved', () => {
   describe('deletion of a blog', () => {
     test('succeeds with status code 204 if id is valid', async () => {
       const newBlog = {
-        title: 'First class tests',
+        title: 'First class',
         author: 'Robert C. Martin',
         url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
         likes: 10,
