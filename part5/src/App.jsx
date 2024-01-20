@@ -52,9 +52,9 @@ const App = () => {
     } catch (error) {
       setMessageAndReset(error.response?.data.error || 'An error occurred', 'red', 3000)
     }
-  }  
+  }
 
-  const removeBlog = async (blog) => {    
+  const removeBlog = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author} ?`)) {
       try {
         await blogService.remove(blog.id)
@@ -64,32 +64,32 @@ const App = () => {
         setMessageAndReset(error.response?.data.error || 'An error occurred', 'red', 3000)
       }
     }
-  }  
+  }
 
-  const updateLikes = async (blogId, blogObject) => {    
+  const updateLikes = async (blogId, blogObject) => {
     try {
       await blogService.update(blogId, blogObject)
       setBlogs(blogs.map(blog => blog.id === blogId ? { ...blog, likes: blog.likes + 1 } : blog))
     } catch (error) {
       setMessageAndReset(error.response?.data.error || 'An error occurred', 'red', 3000)
     }
-  }  
+  }
 
   const loginForm = () => {
     return (
       <div>
-      <h2>log in to application</h2>
+        <h2>log in to application</h2>
 
-      <Notification message={message} color={messageColor} />
+        <Notification message={message} color={messageColor} />
 
-      <LoginForm
-        username={username}
-        password={password}
-        handleUsernameChange={({ target }) => setUsername(target.value)}
-        handlePasswordChange={({ target }) => setPassword(target.value)}
-        handleLogin={handleLogin}
-      />
-    </div>
+        <LoginForm
+          username={username}
+          password={password}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+          handleLogin={handleLogin}
+        />
+      </div>
     )
   }
 
@@ -146,9 +146,12 @@ const App = () => {
 
       {blogForm()}
 
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateLikes={updateLikes} user={user} removeBlog={removeBlog} />
-      )}
+      {blogs
+        .sort((a, b) => b.likes - a.likes)
+        .map(blog =>
+          <Blog key={blog.id} blog={blog} updateLikes={updateLikes} user={user} removeBlog={removeBlog} />
+        )
+      }
     </div>
   )
 }
