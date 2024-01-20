@@ -54,11 +54,22 @@ const App = () => {
     }
   }  
 
+  const removeBlog = async (blog) => {    
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author} ?`)) {
+      try {
+        await blogService.remove(blog.id)
+        setBlogs(blogs.filter(b => b.id !== blog.id))
+        setMessageAndReset(`Blog removed`, 'green', 3000)
+      } catch (error) {
+        setMessageAndReset(error.response?.data.error || 'An error occurred', 'red', 3000)
+      }
+    }
+  }  
+
   const updateLikes = async (blogId, blogObject) => {    
     try {
       await blogService.update(blogId, blogObject)
-      const updatedBlogs = await blogService.getAll()
-      setBlogs(updatedBlogs)
+      setBlogs(blogs.map(blog => blog.id === blogId ? { ...blog, likes: blog.likes + 1 } : blog))
     } catch (error) {
       setMessageAndReset(error.response?.data.error || 'An error occurred', 'red', 3000)
     }
@@ -136,7 +147,7 @@ const App = () => {
       {blogForm()}
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateLikes={updateLikes} />
+        <Blog key={blog.id} blog={blog} updateLikes={updateLikes} user={user} removeBlog={removeBlog} />
       )}
     </div>
   )
