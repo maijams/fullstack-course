@@ -1,6 +1,7 @@
 import { useState } from "react"
 
-const Blog = ({ blog }) => {
+
+const Blog = ({ blog, updateLikes }) => {
   const [detailedView, setDetailedView] = useState(false)
 
   const blogStyle = {
@@ -13,6 +14,16 @@ const Blog = ({ blog }) => {
 
   const toggleDetailedView = () => {
     setDetailedView(!detailedView)
+  }
+
+  const likeBlog = () => {
+    const blogObject = {
+      title: blog.title,
+      author: blog.author,
+      url: blog.url,
+      likes: blog.likes + 1,
+    }
+    updateLikes(blog.id, blogObject)
   }
 
   if (!detailedView) {
@@ -28,7 +39,7 @@ const Blog = ({ blog }) => {
         <br />
         {blog.url}
         <br />
-        likes {blog.likes} <button>like</button>
+        likes {blog.likes} <button onClick={likeBlog}>like</button>
         <br />
         {blog.user.name}
       </div>

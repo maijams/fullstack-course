@@ -43,17 +43,26 @@ const App = () => {
 
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
-    await blogService
-      .create(blogObject)
-      .then(() => {
-        setMessageAndReset(`a new blog ${blogObject.title} by ${blogObject.author} added`, 'green', 3000)
-      })
-      .catch(error => {
-        setMessageAndReset(error.response.data.error, 'red', 3000)
-      })
-    const updatedBlogs = await blogService.getAll()
-    setBlogs(updatedBlogs)
-  }
+
+    try {
+      await blogService.create(blogObject)
+      setMessageAndReset(`A new blog ${blogObject.title} by ${blogObject.author} added`, 'green', 3000)
+      const updatedBlogs = await blogService.getAll()
+      setBlogs(updatedBlogs)
+    } catch (error) {
+      setMessageAndReset(error.response?.data.error || 'An error occurred', 'red', 3000)
+    }
+  }  
+
+  const updateLikes = async (blogId, blogObject) => {    
+    try {
+      await blogService.update(blogId, blogObject)
+      const updatedBlogs = await blogService.getAll()
+      setBlogs(updatedBlogs)
+    } catch (error) {
+      setMessageAndReset(error.response?.data.error || 'An error occurred', 'red', 3000)
+    }
+  }  
 
   const loginForm = () => {
     return (
@@ -127,7 +136,7 @@ const App = () => {
       {blogForm()}
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateLikes={updateLikes} />
       )}
     </div>
   )
