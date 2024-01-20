@@ -10,7 +10,6 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -42,17 +41,18 @@ const App = () => {
     }, timeout)
   }
 
-  const addBlog = (blogObject) => {
+  const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
-    blogService
+    await blogService
       .create(blogObject)
-      .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
+      .then(() => {
         setMessageAndReset(`a new blog ${blogObject.title} by ${blogObject.author} added`, 'green', 3000)
       })
       .catch(error => {
         setMessageAndReset(error.response.data.error, 'red', 3000)
       })
+    const updatedBlogs = await blogService.getAll()
+    setBlogs(updatedBlogs)
   }
 
   const loginForm = () => {
