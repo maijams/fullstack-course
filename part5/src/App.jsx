@@ -59,7 +59,7 @@ const App = () => {
       try {
         await blogService.remove(blog.id)
         setBlogs(blogs.filter(b => b.id !== blog.id))
-        setMessageAndReset(`Blog removed`, 'green', 3000)
+        setMessageAndReset('Blog removed', 'green', 3000)
       } catch (error) {
         setMessageAndReset(error.response?.data.error || 'An error occurred', 'red', 3000)
       }
@@ -94,7 +94,7 @@ const App = () => {
   }
 
   const blogForm = () => (
-    <Togglable buttonLabel="new blog" ref={blogFormRef}>
+    <Togglable buttonLabel='new blog' ref={blogFormRef}>
       <BlogForm createBlog={addBlog} />
     </Togglable>
   )
