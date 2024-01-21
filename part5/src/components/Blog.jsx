@@ -32,13 +32,13 @@ const Blog = ({ blog, updateLikes, user, removeBlog }) => {
 
   if (!detailedView) {
     return (
-      <div style={blogStyle}>
+      <div style={blogStyle} id='min-view'>
         {blog.title} {blog.author} <button onClick={toggleDetailedView}>view</button>
       </div>
     )
   } else {
     return (
-      <div style={blogStyle}>
+      <div style={blogStyle} id='detailed-view'>
         {blog.title} {blog.author} <button onClick={toggleDetailedView}>hide</button>
         <br />
         {blog.url}
