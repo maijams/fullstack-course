@@ -71,6 +71,13 @@ describe('Blog app', function() {
 
         cy.contains('likes 1')
       })
+
+      it('it can be removed by the user who added the blog', function() {
+        cy.contains('view').click()
+        cy.contains('remove').click()
+        cy.should('not.contain', 'Test Blog')
+        cy.should('not.contain', 'view')
+      })
     })
   })
 
