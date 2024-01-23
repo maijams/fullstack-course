@@ -34,6 +34,11 @@ Cypress.Commands.add('login', ({ username, password }) => {
   })
 })
 
+Cypress.Commands.add('logout', () => {
+  localStorage.removeItem('loggedBlogappUser')
+  cy.visit('')
+})
+
 Cypress.Commands.add('createBlog', ({ title, author, url }) => {
   cy.request({
     url: `${Cypress.env('BACKEND')}/blogs`,

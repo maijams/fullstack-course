@@ -1,12 +1,18 @@
 describe('Blog app', function() {
   beforeEach(function() {
     cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)
-    const user = {
+    const user1 = {
       name: 'Test User',
       username: 'testuser',
       password: 'testuser'
     }
-    cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
+    const user2 = {
+      name: 'Test User 2',
+      username: 'testuser2',
+      password: 'testuser2'
+    }
+    cy.request('POST', `${Cypress.env('BACKEND')}/users`, user1)
+    cy.request('POST', `${Cypress.env('BACKEND')}/users`, user2)
     cy.visit('')
   })
 
@@ -77,6 +83,13 @@ describe('Blog app', function() {
         cy.contains('remove').click()
         cy.should('not.contain', 'Test Blog')
         cy.should('not.contain', 'view')
+      })
+
+      it('it cannot be removed by another user', function() {
+        cy.contains('logout').click()
+        cy.login({ username: 'testuser2', password: 'testuser2' })
+        cy.contains('view').click()
+        cy.should('not.contain', 'remove')
       })
     })
   })
