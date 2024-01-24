@@ -43,7 +43,6 @@ const AnecdoteList = () => {
         <Anecdote
           key={anecdote.id}
           anecdote={anecdote}
-          //handleClick={(anecdote) => vote(anecdote)}
         />
       )}
     </div>
