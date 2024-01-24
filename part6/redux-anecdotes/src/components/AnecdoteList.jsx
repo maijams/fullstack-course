@@ -1,8 +1,19 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { voteAnecdote } from '../reducers/anecdoteReducer'
+import { setNotification } from '../reducers/notificationReducer'
 import PropTypes from 'prop-types'
 
-const Anecdote = ({ anecdote, handleClick }) => {
+const Anecdote = ({ anecdote }) => {
+  const dispatch = useDispatch()
+
+  const vote = (anecdote) => {
+    dispatch(voteAnecdote(anecdote.id))
+    dispatch(setNotification(`you voted '${anecdote.content}'`))
+    setTimeout(() => {
+      dispatch(setNotification(''))
+    }, 5000)
+  }
+
   return (
     <div>
       <div>
@@ -10,14 +21,13 @@ const Anecdote = ({ anecdote, handleClick }) => {
       </div>
       <div>
         has {anecdote.votes}
-        <button onClick={handleClick}>vote</button>
+        <button onClick={() => vote(anecdote)}>vote</button>
       </div>
     </div>
   )
 }
 
 const AnecdoteList = () => {
-  const dispatch = useDispatch()
   const anecdotes = useSelector(({ anecdotes, filter }) => {
     if (filter === '') {
       return anecdotes
@@ -33,7 +43,7 @@ const AnecdoteList = () => {
         <Anecdote
           key={anecdote.id}
           anecdote={anecdote}
-          handleClick={() => dispatch(voteAnecdote(anecdote.id))}
+          //handleClick={(anecdote) => vote(anecdote)}
         />
       )}
     </div>
@@ -43,7 +53,6 @@ const AnecdoteList = () => {
 
 Anecdote.propTypes = {
   anecdote: PropTypes.object.isRequired,
-  handleClick: PropTypes.func.isRequired
 }
 
 
