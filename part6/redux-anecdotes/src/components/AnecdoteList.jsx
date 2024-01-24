@@ -18,24 +18,24 @@ const Anecdote = ({ anecdote, handleClick }) => {
 
 const AnecdoteList = () => {
   const dispatch = useDispatch()
-  const anecdotes = useSelector(({ filter, anecdotes }) => {
+  const anecdotes = useSelector(({ anecdotes, filter }) => {
     if (filter === '') {
       return anecdotes
     }
     return anecdotes.filter(anecdote => anecdote.content.toLowerCase().includes(filter.toLowerCase()))
   })
 
+  const sortedAnecdotes = [...anecdotes].sort((a, b) => b.votes - a.votes);
+
   return (
     <div>
-      {anecdotes
-        .sort((a, b) => b.votes - a.votes)
-        .map(anecdote =>
-          <Anecdote
-            key={anecdote.id}
-            anecdote={anecdote}
-            handleClick={() => dispatch(voteAnecdote(anecdote.id))}
-          />
-        )}
+      {sortedAnecdotes.map(anecdote =>
+        <Anecdote
+          key={anecdote.id}
+          anecdote={anecdote}
+          handleClick={() => dispatch(voteAnecdote(anecdote.id))}
+        />
+      )}
     </div>
   )
 }
