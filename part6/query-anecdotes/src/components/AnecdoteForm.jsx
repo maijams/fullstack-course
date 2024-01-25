@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types'
+import { useNotificationDispatch } from '../NotificationContext'
 
 const AnecdoteForm = ({ newAnecdoteMutation }) => {
+	const dispatch = useNotificationDispatch()
 	const getId = () => (100000 * Math.random()).toFixed(0)
 
 	const onCreate = async (event) => {
@@ -14,6 +16,11 @@ const AnecdoteForm = ({ newAnecdoteMutation }) => {
 			votes: 0
 		}
 		newAnecdoteMutation.mutate(object)
+		dispatch({ type: 'SET_NOTIFICATION', payload: `you created '${content}'` })
+		setTimeout(() => {
+			dispatch({ type: 'SET_NOTIFICATION', payload: '' })
+		}, 5000)
+
 	}
 
 	return (
