@@ -1,26 +1,41 @@
-import PropTypes from 'prop-types'
 import { useNotificationDispatch } from '../NotificationContext'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { createAnecdote } from '../requests'
 
-const AnecdoteForm = ({ newAnecdoteMutation }) => {
+
+const AnecdoteForm = () => {
+	const queryClient = useQueryClient()
 	const dispatch = useNotificationDispatch()
 	const getId = () => (100000 * Math.random()).toFixed(0)
 
-	const onCreate = async (event) => {
+	const newAnecdoteMutation = useMutation({
+		mutationFn: createAnecdote,
+		onSuccess: (newAnecdote) => {
+			queryClient.invalidateQueries(['anecdotes'])
+			dispatch({ type: 'SET_NOTIFICATION', payload: `you created '${newAnecdote.content}'` })
+			setTimeout(() => {
+				dispatch({ type: 'SET_NOTIFICATION', payload: '' })
+			}, 5000)
+		},
+		onError: (error) => {
+			const errorMessage = error.response.data.error
+			dispatch({ type: 'SET_NOTIFICATION', payload: errorMessage })
+			setTimeout(() => {
+				dispatch({ type: 'SET_NOTIFICATION', payload: '' })
+			}, 5000)
+		},
+	})
+
+	const onCreate = (event) => {
 		event.preventDefault()
 		const content = event.target.anecdote.value
 		event.target.anecdote.value = ''
-		console.log('new anecdote', content)
 		const object = {
 			content: content,
 			id: getId(),
 			votes: 0
 		}
 		newAnecdoteMutation.mutate(object)
-		dispatch({ type: 'SET_NOTIFICATION', payload: `you created '${content}'` })
-		setTimeout(() => {
-			dispatch({ type: 'SET_NOTIFICATION', payload: '' })
-		}, 5000)
-
 	}
 
 	return (
@@ -34,8 +49,5 @@ const AnecdoteForm = ({ newAnecdoteMutation }) => {
 	)
 }
 
-AnecdoteForm.propTypes = {
-	newAnecdoteMutation: PropTypes.object.isRequired
-}
 
 export default AnecdoteForm

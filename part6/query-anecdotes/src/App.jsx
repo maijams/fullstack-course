@@ -1,22 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
-import { getAnecdotes, createAnecdote, updateAnecdote } from './requests'
+import { getAnecdotes, updateAnecdote } from './requests'
 import { useNotificationDispatch } from './NotificationContext'
 
 const App = () => {
   const queryClient = useQueryClient()
   const dispatch = useNotificationDispatch()
-
-  const newAnecdoteMutation = useMutation({
-    mutationFn: createAnecdote,
-    onSuccess: () => {
-      queryClient.invalidateQueries(['anecdotes'])
-    },
-    onError: (error) => {
-      console.error('An error occurred during mutation:', error);
-    },
-  })
 
   const updateAnecdoteMutation = useMutation({
     mutationFn: updateAnecdote,
@@ -56,7 +46,7 @@ const App = () => {
       <h3>Anecdote app</h3>
 
       <Notification />
-      <AnecdoteForm newAnecdoteMutation={newAnecdoteMutation} />
+      <AnecdoteForm />
 
       {anecdotes.map(anecdote =>
         <div key={anecdote.id}>
