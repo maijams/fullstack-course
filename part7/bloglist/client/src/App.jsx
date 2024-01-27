@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useDispatch } from 'react-redux'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
@@ -6,14 +7,15 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { setNotificationWithTimeOut } from './reducers/notificationReducer'
 
 const App = () => {
+  const dispatch = useDispatch()
+
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [message, setMessage] = useState(null)
-  const [messageColor, setMessageColor] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
@@ -30,28 +32,20 @@ const App = () => {
 
   const blogFormRef = useRef()
 
-  const setMessageAndReset = (message, color, timeout) => {
-    setMessage(message)
-    setMessageColor(color)
-    setTimeout(() => {
-      setMessage(null)
-    }, timeout)
-  }
-
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
 
     try {
       await blogService.create(blogObject)
-      setMessageAndReset(
+      dispatch(setNotificationWithTimeOut(
         `A new blog ${blogObject.title} by ${blogObject.author} added`,
         'green',
-        3000,
-      )
+        3,
+      ))
       const updatedBlogs = await blogService.getAll()
       setBlogs(updatedBlogs)
     } catch (error) {
-      setMessageAndReset(error.response?.data.error || 'An error occurred', 'red', 3000)
+      dispatch(setNotificationWithTimeOut(error.response?.data.error || 'An error occurred', 'red', 3))
     }
   }
 
@@ -60,9 +54,9 @@ const App = () => {
       try {
         await blogService.remove(blog.id)
         setBlogs(blogs.filter((b) => b.id !== blog.id))
-        setMessageAndReset('Blog removed', 'green', 3000)
+        dispatch(setNotificationWithTimeOut('Blog removed', 'green', 3))
       } catch (error) {
-        setMessageAndReset(error.response?.data.error || 'An error occurred', 'red', 3000)
+        dispatch(setNotificationWithTimeOut(error.response?.data.error || 'An error occurred', 'red', 3))
       }
     }
   }
@@ -74,7 +68,7 @@ const App = () => {
         blogs.map((blog) => (blog.id === blogId ? { ...blog, likes: blog.likes + 1 } : blog)),
       )
     } catch (error) {
-      setMessageAndReset(error.response?.data.error || 'An error occurred', 'red', 3000)
+      dispatch(setNotificationWithTimeOut(error.response?.data.error || 'An error occurred', 'red', 3))
     }
   }
 
@@ -83,7 +77,7 @@ const App = () => {
       <div>
         <h2>log in to application</h2>
 
-        <Notification message={message} color={messageColor} />
+        <Notification />
 
         <LoginForm
           username={username}
@@ -115,7 +109,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setMessageAndReset('wrong username or password', 'red', 5000)
+      dispatch(setNotificationWithTimeOut('wrong username or password', 'red', 5))
     }
   }
 
@@ -125,7 +119,7 @@ const App = () => {
       window.localStorage.removeItem('loggedBlogappUser')
       setUser(null)
     } catch (exception) {
-      setMessageAndReset('error logging out', 'red', 5000)
+      dispatch(setNotificationWithTimeOut('error logging out', 'red', 5))
     }
   }
 
@@ -137,7 +131,7 @@ const App = () => {
     <div>
       <h2>blogs</h2>
 
-      <Notification message={message} color={messageColor} />
+      <Notification />
 
       <p>
         {user.name} logged in <button onClick={handleLogout}>logout</button>
