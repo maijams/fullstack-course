@@ -1,18 +1,35 @@
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { createBlog } from '../reducers/blogReducer'
+import { setNotificationWithTimeOut } from '../reducers/notificationReducer'
 
-const BlogForm = ({ createBlog }) => {
+const BlogForm = ({ toggleVisibility }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
+  const dispatch = useDispatch()
+
   const addBlog = (event) => {
     event.preventDefault()
+    toggleVisibility()
+
     const blogObject = {
       title: title,
       author: author,
       url: url,
     }
-    createBlog(blogObject)
+
+    try {
+      dispatch(createBlog(blogObject))
+      dispatch(setNotificationWithTimeOut(
+        `A new blog ${blogObject.title} by ${blogObject.author} added`,
+        'green',
+        3,
+      ))
+    } catch (error) {
+      dispatch(setNotificationWithTimeOut(error.response?.data.error || 'An error occurred', 'red', 3))
+    }
     setTitle('')
     setAuthor('')
     setUrl('')

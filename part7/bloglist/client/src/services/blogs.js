@@ -21,6 +21,8 @@ const create = (newObject) => {
 }
 
 const update = (id, updatedObject) => {
+  console.log('updatedObject', updatedObject)
+  console.log('id', id)
   const config = {
     headers: { Authorization: token },
   }
