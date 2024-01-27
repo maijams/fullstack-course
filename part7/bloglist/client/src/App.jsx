@@ -1,55 +1,30 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { setNotificationWithTimeOut } from './reducers/notificationReducer'
+import { initializeBlogs } from './reducers/blogReducer'
+import { initializeUser, setUser } from './reducers/userReducer'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
-import blogService from './services/blogs'
-import loginService from './services/login'
-import { setNotificationWithTimeOut } from './reducers/notificationReducer'
-import { initializeBlogs } from './reducers/blogReducer'
+
 
 const App = () => {
   const dispatch = useDispatch()
-
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
 
   useEffect(() => {
     dispatch(initializeBlogs())
   }, [dispatch])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
-  }, [])
+    dispatch(initializeUser())
+  }, [dispatch])
 
   const blogFormRef = useRef()
   const blogs = useSelector((state) => state.blogs)
+  const user = useSelector((state) => state.user)
 
-  const loginForm = () => {
-    return (
-      <div>
-        <h2>log in to application</h2>
-
-        <Notification />
-
-        <LoginForm
-          username={username}
-          password={password}
-          handleUsernameChange={({ target }) => setUsername(target.value)}
-          handlePasswordChange={({ target }) => setPassword(target.value)}
-          handleLogin={handleLogin}
-        />
-      </div>
-    )
-  }
   const toggleVisibility = () => {
     const togglableComponent = blogFormRef.current
     togglableComponent.toggleVisibility()
@@ -61,25 +36,21 @@ const App = () => {
     </Togglable>
   )
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    try {
-      const user = await loginService.login({ username, password })
-      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-      blogService.setToken(user.token)
-      setUser(user)
-      setUsername('')
-      setPassword('')
-    } catch (exception) {
-      dispatch(setNotificationWithTimeOut('wrong username or password', 'red', 5))
-    }
+  const loginForm = () => {
+    return (
+      <div>
+        <h2>log in to application</h2>
+        <Notification />
+        <LoginForm />
+      </div>
+    )
   }
 
   const handleLogout = async (event) => {
     event.preventDefault()
     try {
       window.localStorage.removeItem('loggedBlogappUser')
-      setUser(null)
+      dispatch(setUser(null))
     } catch (exception) {
       dispatch(setNotificationWithTimeOut('error logging out', 'red', 5))
     }
@@ -103,7 +74,7 @@ const App = () => {
 
       {blogForm()}
 
-      {sortedBlogs.map((blog) => (<Blog key={blog.id} blog={blog} user={user} />))}
+      {sortedBlogs.map((blog) => (<Blog key={blog.id} blog={blog} />))}
     </div>
   )
 }

@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { deleteBlog, likeBlog } from '../reducers/blogReducer'
 import { setNotificationWithTimeOut } from '../reducers/notificationReducer'
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog }) => {
   const [detailedView, setDetailedView] = useState(false)
+  const user = useSelector((state) => state.user)
   const dispatch = useDispatch()
 
   const blogStyle = {

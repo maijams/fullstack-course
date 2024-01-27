@@ -26,7 +26,6 @@ export const createBlog = (content) => {
 }
 
 export const likeBlog = (id, blog) => {
-  console.log(blog)
   return async dispatch => {
     await blogService.update(id, blog)
     dispatch(initializeBlogs())
