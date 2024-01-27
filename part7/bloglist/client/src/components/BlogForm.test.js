@@ -4,7 +4,6 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import BlogForm from './BlogForm'
 
-
 describe('<BlogForm />', () => {
   test('the form calls event handler with correct data', async () => {
     const blog = {

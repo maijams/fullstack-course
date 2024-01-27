@@ -1,14 +1,12 @@
 const listHelper = require('../utils/list_helper')
 const helper = require('./test_helper')
 
-
 test('dummy returns one', () => {
   const blogs = []
 
   const result = listHelper.dummy(blogs)
   expect(result).toBe(1)
 })
-
 
 describe('total likes', () => {
   test('of empty list is zero', () => {
@@ -26,18 +24,17 @@ describe('total likes', () => {
   })
 })
 
-
 describe('favorite blog', () => {
   const oneBlog = {
     title: 'Go To Statement Considered Harmful',
     author: 'Edsger W. Dijkstra',
-    likes: 5
+    likes: 5,
   }
 
   const fav_blog = {
     title: 'Go To Statement Considered Harmful',
     author: 'Edsger W. Dijkstra',
-    likes: 15
+    likes: 15,
   }
 
   test('of empty list is empty object', () => {
@@ -56,12 +53,11 @@ describe('favorite blog', () => {
   })
 })
 
-
 describe('most blogs', () => {
   const oneBlog = {
     title: 'Go To Statement Considered Harmful',
     author: 'Edsger W. Dijkstra',
-    likes: 5
+    likes: 5,
   }
 
   test('of empty list is empty object', () => {
@@ -80,12 +76,11 @@ describe('most blogs', () => {
   })
 })
 
-
 describe('most likes', () => {
   const oneBlog = {
     title: 'Go To Statement Considered Harmful',
     author: 'Edsger W. Dijkstra',
-    likes: 5
+    likes: 5,
   }
 
   test('of empty list is empty object', () => {

@@ -4,7 +4,6 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
-
 describe('<Blog />', () => {
   const blog = {
     title: 'React patterns',
@@ -14,15 +13,15 @@ describe('<Blog />', () => {
     user: {
       username: 'test3',
       name: 'test',
-      id: '65a8f6843fc6bb265cf516d8'
+      id: '65a8f6843fc6bb265cf516d8',
     },
-    id: '65abee845578955439861ffa'
+    id: '65abee845578955439861ffa',
   }
 
   const testuser = {
     username: 'test3',
     name: 'test',
-    id: '65a8f6843fc6bb265cf516d8'
+    id: '65a8f6843fc6bb265cf516d8',
   }
 
   test('renders content', () => {
@@ -65,4 +64,3 @@ describe('<Blog />', () => {
     expect(mockHandler.mock.calls).toHaveLength(2)
   })
 })
-

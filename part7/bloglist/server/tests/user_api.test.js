@@ -7,7 +7,6 @@ const api = supertest(app)
 const User = require('../models/user')
 const helper = require('./test_helper')
 
-
 describe('when there is initially one user at db', () => {
   beforeEach(async () => {
     await User.deleteMany({})
@@ -28,18 +27,15 @@ describe('when there is initially one user at db', () => {
       const newUser = {
         username: 'testuser',
         name: 'Test User',
-        password: 'testpassword'
+        password: 'testpassword',
       }
 
-      await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(201)
+      await api.post('/api/users').send(newUser).expect(201)
 
       const usersAtEnd = await helper.usersInDb()
       expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
 
-      const usernames = usersAtEnd.map(u => u.username)
+      const usernames = usersAtEnd.map((u) => u.username)
       expect(usernames).toContain(newUser.username)
     })
 
@@ -49,13 +45,10 @@ describe('when there is initially one user at db', () => {
       const newUser = {
         username: 'test',
         name: 'Test User',
-        password: 'testpassword'
+        password: 'testpassword',
       }
 
-      const result = await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(400)
+      const result = await api.post('/api/users').send(newUser).expect(400)
 
       expect(result.body.error).toContain('`username` to be unique')
 
@@ -68,13 +61,10 @@ describe('when there is initially one user at db', () => {
 
       const newUser = {
         name: 'Test1234',
-        password: 'testpassword'
+        password: 'testpassword',
       }
 
-      const result = await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(400)
+      const result = await api.post('/api/users').send(newUser).expect(400)
 
       expect(result.body.error).toContain('`username` is required')
 
@@ -88,13 +78,10 @@ describe('when there is initially one user at db', () => {
       const newUser = {
         username: 'te',
         name: 'Test1234',
-        password: 'testpassword'
+        password: 'testpassword',
       }
 
-      const result = await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(400)
+      const result = await api.post('/api/users').send(newUser).expect(400)
 
       expect(result.body.error).toContain('is shorter than the minimum allowed length')
 
@@ -110,10 +97,7 @@ describe('when there is initially one user at db', () => {
         name: 'Test User',
       }
 
-      const result = await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(400)
+      const result = await api.post('/api/users').send(newUser).expect(400)
 
       expect(result.body.error).toContain('password must be at least 3 characters long')
 
@@ -127,23 +111,18 @@ describe('when there is initially one user at db', () => {
       const newUser = {
         username: 'testuser',
         name: 'Test User',
-        password: 'te'
+        password: 'te',
       }
 
-      const result = await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(400)
+      const result = await api.post('/api/users').send(newUser).expect(400)
 
       expect(result.body.error).toContain('password must be at least 3 characters long')
 
       const usersAtEnd = await helper.usersInDb()
       expect(usersAtEnd).toHaveLength(usersAtStart.length)
     })
-
   })
 })
-
 
 afterAll(async () => {
   await mongoose.connection.close()

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-
 const Blog = ({ blog, updateLikes, user, removeBlog }) => {
   const [detailedView, setDetailedView] = useState(false)
 
@@ -9,7 +8,7 @@ const Blog = ({ blog, updateLikes, user, removeBlog }) => {
     paddingLeft: 2,
     border: 'solid',
     borderWidth: 1,
-    marginBottom: 5
+    marginBottom: 5,
   }
 
   const toggleDetailedView = () => {
@@ -32,13 +31,13 @@ const Blog = ({ blog, updateLikes, user, removeBlog }) => {
 
   if (!detailedView) {
     return (
-      <div style={blogStyle} id='min-view'>
+      <div style={blogStyle} id="min-view">
         {blog.title} {blog.author} <button onClick={toggleDetailedView}>view</button>
       </div>
     )
   } else {
     return (
-      <div style={blogStyle} id='detailed-view'>
+      <div style={blogStyle} id="detailed-view">
         {blog.title} {blog.author} <button onClick={toggleDetailedView}>hide</button>
         <br />
         {blog.url}
@@ -47,9 +46,7 @@ const Blog = ({ blog, updateLikes, user, removeBlog }) => {
         <br />
         {blog.user.name}
         <br />
-        {blog.user.username === user.username &&
-        <button onClick={deleteBlog}>remove</button>
-        }
+        {blog.user.username === user.username && <button onClick={deleteBlog}>remove</button>}
       </div>
     )
   }

@@ -8,7 +8,6 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 const helper = require('./test_helper')
 
-
 describe('when there is initially some blogs saved', () => {
   let authToken = null
 
@@ -20,15 +19,9 @@ describe('when there is initially some blogs saved', () => {
       password: 'test',
     }
 
-    await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(201)
+    await api.post('/api/users').send(newUser).expect(201)
 
-    const response = await api
-      .post('/api/login')
-      .send(newUser)
-      .expect(200)
+    const response = await api.post('/api/login').send(newUser).expect(200)
 
     authToken = response.body.token
   })
@@ -75,10 +68,8 @@ describe('when there is initially some blogs saved', () => {
       const blogsAtEnd = await helper.blogsInDb()
       expect(blogsAtEnd).toHaveLength(helper.blogs.length + 1)
 
-      const titles = blogsAtEnd.map(b => b.title)
-      expect(titles).toContain(
-        'First class tests'
-      )
+      const titles = blogsAtEnd.map((b) => b.title)
+      expect(titles).toContain('First class tests')
     })
 
     test('likes is initialized to 0 if not defined', async () => {
@@ -105,10 +96,7 @@ describe('when there is initially some blogs saved', () => {
         likes: 10,
       }
 
-      await api
-        .post('/api/blogs')
-        .send(newBlog)
-        .expect(401)
+      await api.post('/api/blogs').send(newBlog).expect(401)
 
       const blogsAtEnd = await helper.blogsInDb()
       expect(blogsAtEnd).toHaveLength(helper.blogs.length)
@@ -174,11 +162,9 @@ describe('when there is initially some blogs saved', () => {
 
       const blogsAtEnd = await helper.blogsInDb()
 
-      expect(blogsAtEnd).toHaveLength(
-        blogsAtStart.length - 1
-      )
+      expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1)
 
-      const titles = blogsAtEnd.map(b => b.title)
+      const titles = blogsAtEnd.map((b) => b.title)
 
       expect(titles).not.toContain(blogToDelete.title)
     })
@@ -191,9 +177,7 @@ describe('when there is initially some blogs saved', () => {
 
       const blogsAtEnd = await helper.blogsInDb()
 
-      expect(blogsAtEnd).toHaveLength(
-        helper.blogs.length
-      )
+      expect(blogsAtEnd).toHaveLength(helper.blogs.length)
     })
   })
 
@@ -209,18 +193,13 @@ describe('when there is initially some blogs saved', () => {
         likes: 20,
       }
 
-      const response = await api
-        .put(`/api/blogs/${blogToModify.id}`)
-        .send(modifiedBlog)
-        .expect(200)
+      const response = await api.put(`/api/blogs/${blogToModify.id}`).send(modifiedBlog).expect(200)
 
       expect(response.body.likes).toBe(20)
 
       const blogsAtEnd = await helper.blogsInDb()
 
-      expect(blogsAtEnd).toHaveLength(
-        helper.blogs.length
-      )
+      expect(blogsAtEnd).toHaveLength(helper.blogs.length)
     })
 
     test('fails with status code 404 if id is not valid', async () => {
@@ -231,20 +210,14 @@ describe('when there is initially some blogs saved', () => {
         likes: 20,
       }
 
-      await api
-        .put(`/api/blogs/${helper.nonExistingId}`)
-        .send(modifiedBlog)
-        .expect(404)
+      await api.put(`/api/blogs/${helper.nonExistingId}`).send(modifiedBlog).expect(404)
 
       const blogsAtEnd = await helper.blogsInDb()
 
-      expect(blogsAtEnd).toHaveLength(
-        helper.blogs.length
-      )
+      expect(blogsAtEnd).toHaveLength(helper.blogs.length)
     })
   })
 })
-
 
 afterAll(async () => {
   await mongoose.connection.close()

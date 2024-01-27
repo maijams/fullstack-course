@@ -7,7 +7,6 @@ import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
-
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
@@ -17,9 +16,7 @@ const App = () => {
   const [messageColor, setMessageColor] = useState(null)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
+    blogService.getAll().then((blogs) => setBlogs(blogs))
   }, [])
 
   useEffect(() => {
@@ -46,7 +43,11 @@ const App = () => {
 
     try {
       await blogService.create(blogObject)
-      setMessageAndReset(`A new blog ${blogObject.title} by ${blogObject.author} added`, 'green', 3000)
+      setMessageAndReset(
+        `A new blog ${blogObject.title} by ${blogObject.author} added`,
+        'green',
+        3000,
+      )
       const updatedBlogs = await blogService.getAll()
       setBlogs(updatedBlogs)
     } catch (error) {
@@ -58,7 +59,7 @@ const App = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author} ?`)) {
       try {
         await blogService.remove(blog.id)
-        setBlogs(blogs.filter(b => b.id !== blog.id))
+        setBlogs(blogs.filter((b) => b.id !== blog.id))
         setMessageAndReset('Blog removed', 'green', 3000)
       } catch (error) {
         setMessageAndReset(error.response?.data.error || 'An error occurred', 'red', 3000)
@@ -69,7 +70,9 @@ const App = () => {
   const updateLikes = async (blogId, blogObject) => {
     try {
       await blogService.update(blogId, blogObject)
-      setBlogs(blogs.map(blog => blog.id === blogId ? { ...blog, likes: blog.likes + 1 } : blog))
+      setBlogs(
+        blogs.map((blog) => (blog.id === blogId ? { ...blog, likes: blog.likes + 1 } : blog)),
+      )
     } catch (error) {
       setMessageAndReset(error.response?.data.error || 'An error occurred', 'red', 3000)
     }
@@ -94,7 +97,7 @@ const App = () => {
   }
 
   const blogForm = () => (
-    <Togglable buttonLabel='new blog' ref={blogFormRef}>
+    <Togglable buttonLabel="new blog" ref={blogFormRef}>
       <BlogForm createBlog={addBlog} />
     </Togglable>
   )
@@ -103,11 +106,10 @@ const App = () => {
     event.preventDefault()
     try {
       const user = await loginService.login({
-        username, password,
+        username,
+        password,
       })
-      window.localStorage.setItem(
-        'loggedBlogappUser', JSON.stringify(user)
-      )
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
@@ -127,13 +129,8 @@ const App = () => {
     }
   }
 
-
   if (user === null) {
-    return (
-      <div>
-        {loginForm()}
-      </div>
-    )
+    return <div>{loginForm()}</div>
   }
 
   return (
@@ -142,16 +139,23 @@ const App = () => {
 
       <Notification message={message} color={messageColor} />
 
-      <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
+      <p>
+        {user.name} logged in <button onClick={handleLogout}>logout</button>
+      </p>
 
       {blogForm()}
 
       {blogs
         .sort((a, b) => b.likes - a.likes)
-        .map(blog =>
-          <Blog key={blog.id} blog={blog} updateLikes={updateLikes} user={user} removeBlog={removeBlog} />
-        )
-      }
+        .map((blog) => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            updateLikes={updateLikes}
+            user={user}
+            removeBlog={removeBlog}
+          />
+        ))}
     </div>
   )
 }
