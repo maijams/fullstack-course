@@ -1,15 +1,17 @@
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useState } from 'react'
 import { setUser } from '../reducers/userReducer'
 import { setNotificationWithTimeOut } from '../reducers/notificationReducer'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
+import { Navigate } from 'react-router-dom'
 
 const LoginForm = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
   const dispatch = useDispatch()
+  const user = useSelector((state) => state.user.loggedUser)
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -25,8 +27,13 @@ const LoginForm = () => {
     }
   }
 
+  if (user) {
+    return (<Navigate replace to="/" />)
+  }
+
   return (
     <div>
+      <h2>log in to application</h2>
       <form onSubmit={handleLogin}>
         <div>
           username

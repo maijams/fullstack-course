@@ -1,13 +1,28 @@
 import { createSlice } from '@reduxjs/toolkit'
 import blogService from '../services/blogs'
+import userService from '../services/users'
+
+const initialState = {
+  loggedUser: null,
+  allUsers: null
+}
 
 const userSlice = createSlice({
   name: 'user',
-  initialState: null,
+  initialState,
   reducers: {
     setUser(state, action) {
-      return action.payload
+      return {
+        ...state,
+        loggedUser: action.payload
+      }
     },
+    setAllUsers(state, action) {
+      return {
+        ...state,
+        allUsers: action.payload
+      }
+    }
   }
 })
 
@@ -22,5 +37,13 @@ export const initializeUser = () => {
   }
 }
 
-export const { setUser } = userSlice.actions
+export const getAllUsers = () => {
+  return async dispatch => {
+    const users = await userService.getAll()
+    dispatch(setAllUsers(users))
+  }
+}
+
+
+export const { setUser, setAllUsers } = userSlice.actions
 export default userSlice.reducer

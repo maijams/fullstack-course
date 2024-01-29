@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:3003/api/blogs'
+const baseUrl = 'http://localhost:3003/api/users'
 
 let token = null
 
@@ -7,9 +7,9 @@ const setToken = (newToken) => {
   token = `bearer ${newToken}`
 }
 
-const getAll = () => {
-  const request = axios.get(baseUrl)
-  return request.then((response) => response.data)
+const getAll = async () => {
+  const response = await axios.get(baseUrl)
+  return response.data
 }
 
 const create = (newObject) => {
@@ -36,9 +36,4 @@ const remove = (id) => {
   return request.then((response) => response.data)
 }
 
-const comment = (id, comment) => {
-  const request = axios.post(`${baseUrl}/${id}/comments`, { comment })
-  return request.then((response) => response.data)
-}
-
-export default { getAll, create, setToken, update, remove, comment }
+export default { getAll, create, setToken, update, remove }

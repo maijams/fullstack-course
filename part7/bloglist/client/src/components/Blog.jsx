@@ -1,23 +1,13 @@
-import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteBlog, likeBlog } from '../reducers/blogReducer'
+import { commentBlog, deleteBlog, likeBlog } from '../reducers/blogReducer'
 import { setNotificationWithTimeOut } from '../reducers/notificationReducer'
 
 const Blog = ({ blog }) => {
-  const [detailedView, setDetailedView] = useState(false)
-  const user = useSelector((state) => state.user)
+  const user = useSelector((state) => state.user.loggedUser)
   const dispatch = useDispatch()
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
-
-  const toggleDetailedView = () => {
-    setDetailedView(!detailedView)
+  if (!blog) {
+    return null
   }
 
   const like = () => {
@@ -46,27 +36,37 @@ const Blog = ({ blog }) => {
     }
   }
 
-  if (!detailedView) {
-    return (
-      <div style={blogStyle} id="min-view">
-        {blog.title} {blog.author} <button onClick={toggleDetailedView}>view</button>
-      </div>
-    )
-  } else {
-    return (
-      <div style={blogStyle} id="detailed-view">
-        {blog.title} {blog.author} <button onClick={toggleDetailedView}>hide</button>
-        <br />
-        {blog.url}
-        <br />
-        likes {blog.likes} <button onClick={like}>like</button>
-        <br />
-        {blog.user.name}
-        <br />
-        {blog.user.username === user.username && <button onClick={removeBlog}>remove</button>}
-      </div>
-    )
+  const addComment = (event) => {
+    event.preventDefault()
+    const comment = event.target.comment.value
+    event.target.comment.value = ''
+    try {
+      dispatch(commentBlog(blog.id, comment))
+    } catch (error) {
+      dispatch(setNotificationWithTimeOut(error.response?.data.error || 'An error occurred', 'red', 3))
+    }
   }
+
+  return (
+    <div id="detailed-view">
+      <h2>{blog.title} {blog.author}</h2>
+      <a href={blog.url}>{blog.url}</a>
+      <br />
+      likes {blog.likes} <button onClick={like}>like</button>
+      <br />
+      added by {blog.user.name}
+      <br />
+      {blog.user.username === user.username && <button onClick={removeBlog}>remove</button>}
+
+      <h4>comments</h4>
+      <form onSubmit={addComment}>
+        <input name="comment" id="comment" />
+        <button type="submit" id="add-comment-button"> add comment </button>
+      </form>
+      {blog.comments.map((comment) => <li key={comment}>{comment}</li>)}
+    </div>
+  )
 }
+
 
 export default Blog
