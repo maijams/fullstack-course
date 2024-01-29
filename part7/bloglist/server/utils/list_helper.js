@@ -16,10 +16,10 @@ const favoriteBlog = (blogs) => {
   return result === 0
     ? {}
     : {
-        title: result.title,
-        author: result.author,
-        likes: result.likes,
-      }
+      title: result.title,
+      author: result.author,
+      likes: result.likes,
+    }
 }
 
 const mostBlogs = (blogs) => {
