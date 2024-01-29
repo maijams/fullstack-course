@@ -10,7 +10,7 @@ import UserList from './components/UserList'
 import User from './components/User'
 import BlogList from './components/BlogList'
 import Navigation from './components/Navigation'
-
+import './scss/bootstrap.min.css'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -46,8 +46,9 @@ const App = () => {
   return (
     <div className="container">
       <Navigation />
-
-      <h2>blog app</h2>
+      <br/>
+      <h2>Blog app</h2>
+      <br/>
       <Notification />
 
       {!user && <Navigate replace to='/login' />}

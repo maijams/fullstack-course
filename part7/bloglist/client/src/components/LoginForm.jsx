@@ -5,6 +5,7 @@ import { setNotificationWithTimeOut } from '../reducers/notificationReducer'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
 import { Navigate } from 'react-router-dom'
+import { Form, Button } from 'react-bootstrap'
 
 const LoginForm = () => {
   const [username, setUsername] = useState('')
@@ -33,20 +34,18 @@ const LoginForm = () => {
 
   return (
     <div>
-      <h2>log in to application</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input value={username} onChange={(event) => setUsername(event.target.value)} id="username" />
-        </div>
-        <div>
-          password
-          <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} id="password" />
-        </div>
-        <button type="submit" id="login-button">
-          login
-        </button>
-      </form>
+      <h2>Log in to application</h2>
+      <Form onSubmit={handleLogin}>
+        <Form.Group>
+          username:
+          <Form.Control value={username} onChange={(event) => setUsername(event.target.value)} id="username" />
+          password:
+          <Form.Control type="password" value={password} onChange={(event) => setPassword(event.target.value)} id="password" />
+          <Button type="submit" id="login-button">
+            Login
+          </Button>
+        </Form.Group>
+      </Form>
     </div>
   )
 }

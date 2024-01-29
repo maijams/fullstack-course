@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { createBlog } from '../reducers/blogReducer'
 import { setNotificationWithTimeOut } from '../reducers/notificationReducer'
+import { Form, Button } from 'react-bootstrap'
+
 
 const BlogForm = ({ toggleVisibility }) => {
   const [title, setTitle] = useState('')
@@ -37,25 +39,25 @@ const BlogForm = ({ toggleVisibility }) => {
 
   return (
     <div>
-      <h2>create new</h2>
+      <h2>Create new</h2>
 
-      <form onSubmit={addBlog}>
+      <Form onSubmit={addBlog}>
         <div>
           title:
-          <input value={title} onChange={(event) => setTitle(event.target.value)} id="title" />
+          <Form.Control value={title} onChange={(event) => setTitle(event.target.value)} id="title" />
         </div>
         <div>
           author:
-          <input value={author} onChange={(event) => setAuthor(event.target.value)} id="author" />
+          <Form.Control value={author} onChange={(event) => setAuthor(event.target.value)} id="author" />
         </div>
         <div>
           url:
-          <input value={url} onChange={(event) => setUrl(event.target.value)} id="url" />
+          <Form.Control value={url} onChange={(event) => setUrl(event.target.value)} id="url" />
         </div>
-        <button type="submit" id="create-blog-button">
+        <Button type="submit" id="create-blog-button">
           create
-        </button>
-      </form>
+        </Button>
+      </Form>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { commentBlog, deleteBlog, likeBlog } from '../reducers/blogReducer'
 import { setNotificationWithTimeOut } from '../reducers/notificationReducer'
+import { Form, Button } from 'react-bootstrap'
 
 const Blog = ({ blog }) => {
   const user = useSelector((state) => state.user.loggedUser)
@@ -49,21 +50,24 @@ const Blog = ({ blog }) => {
 
   return (
     <div id="detailed-view">
-      <h2>{blog.title} {blog.author}</h2>
+      <h2>{blog.title} by {blog.author}</h2>
       <a href={blog.url}>{blog.url}</a>
       <br />
-      likes {blog.likes} <button onClick={like}>like</button>
+      likes {blog.likes} <Button onClick={like}>like</Button>
       <br />
       added by {blog.user.name}
       <br />
-      {blog.user.username === user.username && <button onClick={removeBlog}>remove</button>}
-
-      <h4>comments</h4>
-      <form onSubmit={addComment}>
-        <input name="comment" id="comment" />
-        <button type="submit" id="add-comment-button"> add comment </button>
-      </form>
-      {blog.comments.map((comment) => <li key={comment}>{comment}</li>)}
+      {blog.user.username === user.username && <Button onClick={removeBlog}>remove</Button>}
+      <br />
+      <br />
+      <h4>Comments</h4>
+      <Form onSubmit={addComment}>
+        <Form.Control name="comment" id="comment" />
+        <Button type="submit" id="add-comment-button"> add comment </Button>
+      </Form>
+      <ul>
+        {blog.comments.map((comment) => <li key={comment}>{comment}</li>)}
+      </ul>
     </div>
   )
 }

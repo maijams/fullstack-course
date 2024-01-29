@@ -16,11 +16,12 @@ const BlogList = () => {
   }
 
   const blogStyle = {
-    paddingTop: 10,
+    paddingTop: 5,
+    paddingBottom: 5,
     paddingLeft: 2,
     border: 'solid',
     borderWidth: 1,
-    marginBottom: 5,
+    marginBottom: 7,
   }
 
   return (
@@ -28,7 +29,7 @@ const BlogList = () => {
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <BlogForm toggleVisibility={toggleVisibility} />
       </Togglable>
-
+      <br/>
       {sortedBlogs.map((blog) => (
         <Link to={`/blogs/${blog.id}`} key={blog.id} >
           <div style={blogStyle}>

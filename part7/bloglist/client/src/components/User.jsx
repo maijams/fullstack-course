@@ -8,6 +8,7 @@ const User = ({ user }) => {
   return (
     <div>
       <h2>{user.username}</h2>
+      <br/>
       <h3>added blogs</h3>
       <ul>
         {user.blogs.map((blog) => (
