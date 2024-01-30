@@ -9,6 +9,7 @@ const ALL_AUTHORS = gql`
     }
   }
 `
+
 const Authors = (props) => {
   const authors = useQuery(ALL_AUTHORS)
   
