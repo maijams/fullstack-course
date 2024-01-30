@@ -17,13 +17,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initializeUser())
-  }, [dispatch])
-
-  useEffect(() => {
     dispatch(initializeBlogs())
-  }, [dispatch])
-
-  useEffect(() => {
     dispatch(getAllUsers())
   }, [dispatch])
 
@@ -46,9 +40,9 @@ const App = () => {
   return (
     <div className="container">
       <Navigation />
-      <br/>
+      <br />
       <h2>Blog app</h2>
-      <br/>
+      <br />
       <Notification />
 
       {!user && <Navigate replace to='/login' />}
