@@ -105,36 +105,40 @@ const typeDefs = `
 
 const resolvers = {
   Query: {
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
-    allBooks: (root, args) => {
+    bookCount: async () => Book.collection.countDocuments(),
+    authorCount: async () => Author.collection.countDocuments(),
+    allBooks: async (root, args) => {
       if (!args.author && !args.genre) {
-        return books
+        return Book.find({})
       }
-      let filteredBooks = books
+      let query = {}
       if (args.genre) {
-        filteredBooks = filteredBooks.filter(book => book.genres.includes(args.genre))
+        query.genres = args.genre
       }
       if (args.author) {
-        filteredBooks = filteredBooks.filter(book => book.author === args.author)
+        const author = await Author.findOne({ name: args.author })
+        if (author) {
+          query.author = author._id
+        }
       }
-      return filteredBooks
+      return Book.find(query)
     },
-    allAuthors: () => authors,
+    allAuthors: async () => {
+      return Author.find({})
+    },
   },
   Author: {
-    bookCount: (root) => {
-      return books.filter(book => book.author === root.name).length
+    bookCount: async (root) => {
+      return Book.countDocuments({ author: root._id })
     }
   },
   Mutation: {
     addBook: async (root, args) => {
-      const author = await Author.findOne({ name: args.author })
+      let author = await Author.findOne({ name: args.author })
       if (!author) {
-        const newAuthor = new Author({ name: args.author, born: null })
+        author = new Author({ name: args.author, born: null })
         try {
-          await newAuthor.save()
-          args.author = newAuthor._id
+          await author.save()
         } catch (error) {
           throw new GraphQLError('Saving author failed', {
             extensions: {
@@ -144,9 +148,8 @@ const resolvers = {
             }
           })
         }
-      } else {
-        args.author = author._id
       }
+      args.author = author._id
       const book = new Book({ ...args })
       
       try {
