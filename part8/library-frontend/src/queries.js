@@ -18,6 +18,7 @@ export const ALL_BOOKS = gql`
         name
       }
       published
+      genres
     }
   }
 `
@@ -46,6 +47,12 @@ export const EDIT_AUTHOR = gql`
       bookCount
       id
     }
+  }
+`
+
+export const ALL_GENRES = gql`
+  query {
+    allGenres
   }
 `
 
