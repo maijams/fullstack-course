@@ -4,7 +4,7 @@ import { ALL_BOOKS } from '../queries'
 
 const Books = (props) => {
   const books = useQuery(ALL_BOOKS)
-  
+
   if (!props.show || books.loading) {
     return null
   }

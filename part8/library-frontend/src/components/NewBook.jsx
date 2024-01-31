@@ -9,14 +9,14 @@ const NewBook = (props) => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
-  const [ createBook ] = useMutation(CREATE_BOOK, {
-    refetchQueries: [ 
+  const [createBook] = useMutation(CREATE_BOOK, {
+    refetchQueries: [
       { query: ALL_AUTHORS },
-      { query: ALL_BOOKS}
+      { query: ALL_BOOKS }
     ],
     onError: (error) => {
-      console.log(error.graphQLErrors[0].message)
-    }
+      console.log('virhe', error.graphQLErrors[0].message)
+    },
   })
 
   if (!props.show) {

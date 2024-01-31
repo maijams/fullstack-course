@@ -197,7 +197,7 @@ const resolvers = {
           }
         })
       }
-      return book
+      return Book.findById(book._id).populate('author')
     },
     editAuthor: async (root, args, context) => {
       const currentUser = context.currentUser
