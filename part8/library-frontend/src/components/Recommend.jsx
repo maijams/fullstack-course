@@ -4,11 +4,12 @@ import { ALL_BOOKS, ME } from '../queries'
 const Recommend = (props) => {
   const books = useQuery(ALL_BOOKS)
   const user = useQuery(ME)
-  const genre = user.data.me.favoriteGenre
 
-  if (!props.show || books.loading ) {
+  if (!props.show || books.loading || user.loading) {
     return null
   }
+
+  const genre = user.data.me.favoriteGenre
 
   return (
     <div>
