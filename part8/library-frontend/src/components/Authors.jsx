@@ -28,6 +28,7 @@ const Authors = (props) => {
 
     setAuthorName(null)
     setBorn('')
+    props.notify('Author birthyear updated')
   }
 
   const options = authors.data.allAuthors.map((a) => ({ value: a.name, label: a.name }))

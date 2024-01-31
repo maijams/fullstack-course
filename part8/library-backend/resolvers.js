@@ -85,9 +85,9 @@ const resolvers = {
           }
         })
       }
-      pubsub.publish('BOOK_ADDED', { bookAdded: book })
-
-      return Book.findById(book._id).populate('author')
+      const newBook = await Book.findById(book._id).populate('author')
+      pubsub.publish('BOOK_ADDED', { bookAdded: newBook })
+      return newBook
     },
     editAuthor: async (root, args, context) => {
       const currentUser = context.currentUser
