@@ -40,20 +40,78 @@ const App = () => {
       <form onSubmit={addNewEntry}>
         date
         <input
+          type='date'
           value={date}
           onChange={(event) => setDate(event.target.value)}
         />
         <br />
         visibility
+        &nbsp;
+        great
         <input
-          value={visibility}
-          onChange={(event) => setVisibility(event.target.value)}
+          type='radio'
+          name='visibility'
+          checked={visibility === 'great'}
+          onChange={() => setVisibility('great')}
+        />
+        good
+        <input
+          type='radio'
+          name='visibility'
+          checked={visibility === 'good'}
+          onChange={() => setVisibility('good')}
+        />
+        ok
+        <input
+          type='radio'
+          name='visibility'
+          checked={visibility === 'ok'}
+          onChange={() => setVisibility('ok')}
+        />
+        poor
+        <input
+          type='radio'
+          name='visibility'
+          checked={visibility === 'poor'}
+          onChange={() => setVisibility('poor')}
         />
         <br />
         weather
+        &nbsp;
+        sunny
         <input
-          value={weather}
-          onChange={(event) => setWeather(event.target.value)}
+          type='radio'
+          name='weather'
+          checked={weather === 'sunny'}
+          onChange={() => setWeather('sunny')}
+        />
+        rainy
+        <input
+          type='radio'
+          name='weather'
+          checked={weather === 'rainy'}
+          onChange={() => setWeather('rainy')}
+        />
+        cloudy
+        <input
+          type='radio'
+          name='weather'
+          checked={weather === 'cloudy'}
+          onChange={() => setWeather('cloudy')}
+        />
+        stormy
+        <input
+          type='radio'
+          name='weather'
+          checked={weather === 'stormy'}
+          onChange={() => setWeather('stormy')}
+        />
+        windy
+        <input
+          type='radio'
+          name='weather'
+          checked={weather === 'windy'}
+          onChange={() => setWeather('windy')}
         />
         <br />
         comment
