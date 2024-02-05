@@ -15,6 +15,10 @@ const getPatients = (): NonSensitivePatient[] => {
   }));
 };
 
+const getPatient = (id: string): Patient | undefined => {
+  return patients.find(p => p.id === id);
+};
+
 const addPatient = ( entry: NewPatient ): Patient => {
   // eslint-disable-next-line
   const id: string = uuid();
@@ -29,5 +33,6 @@ const addPatient = ( entry: NewPatient ): Patient => {
 
 export default {
   getPatients,
+  getPatient,
   addPatient
 };
