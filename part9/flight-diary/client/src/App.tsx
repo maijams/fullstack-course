@@ -1,13 +1,8 @@
 import { useState } from 'react'
 import { useEffect } from 'react'
 import axios from 'axios'
-
-interface Diary {
-  id: number;
-  date: string;
-  visibility: string;
-  weather: string;
-}
+import { Diary } from './types'
+import { getAllDiaries, createDiary } from './services/diaryService'
 
 const App = () => {
   const [diaries, setDiaries] = useState<Diary[]>([])
@@ -15,32 +10,33 @@ const App = () => {
   const [visibility, setVisibility] = useState('')
   const [weather, setWeather] = useState('')
   const [comment, setComment] = useState('')
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    axios.get('http://localhost:3000/api/diaries').then(response => {
-      setDiaries(response.data);
-    })
+    getAllDiaries().then(diaries => setDiaries(diaries))
   }, [])
 
-  const addNewEntry = (event: React.SyntheticEvent) => {
+  const addNewEntry = async (event: React.SyntheticEvent) => {
     event.preventDefault()
-    axios.post('http://localhost:3000/api/diaries', {
-      date: date,
-      visibility: visibility,
-      weather: weather,
-      comment: comment
-    }).then(response => {
-      setDiaries(diaries.concat(response.data))
+    try {
+      const newDiary = await createDiary({ date, visibility, weather, comment })
+      setDiaries(diaries.concat(newDiary))
       setDate('')
       setVisibility('')
       setWeather('')
       setComment('')
-    })
+      setError(null)
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data)
+      }
+    }
   }
 
   return (
     <>
       <h2>Add new entry</h2>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <form onSubmit={addNewEntry}>
         date
         <input
