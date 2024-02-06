@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
-import { Patient } from "../../types";
+import { Patient, Diagnosis } from "../../types";
 import patientService from "../../services/patients";
 
-const PatientPage = ({ patientId }: { patientId: string }) => {
+interface PatientPageProps {
+  patientId: string;
+  diagnoses: Diagnosis[];
+}
+
+const PatientPage = ({ patientId, diagnoses }: PatientPageProps) => {
   const [patient, setPatient] = useState<Patient | null>(null);
 
   useEffect(() => {
@@ -30,9 +35,9 @@ const PatientPage = ({ patientId }: { patientId: string }) => {
         <div key={entry.id}>
           {entry.date} <em>{entry.description}</em>
           <ul>
-          {entry.diagnosisCodes?.map((code) => (
-              <li key={code}>{code}</li>
-          ))}
+            {entry.diagnosisCodes?.map((code) => (
+              <li key={code}>{code} {diagnoses.find(diagnosis => diagnosis.code === code)?.name}</li>
+            ))}
           </ul>
         </div>
       ))}
