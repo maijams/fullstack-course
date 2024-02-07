@@ -1,0 +1,10 @@
+POST http://localhost:3001/api/patients
+Content-Type: application/json
+
+{
+  "name": "Dana Scully",
+  "dateOfBirth": "1974-01-05",
+  "ssn": "050174-432N",
+  "gender": "female",
+  "occupation": "Forensic Pathologist"
+}
