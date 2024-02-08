@@ -117,7 +117,7 @@ const PatientPage = ({ patientId, diagnoses }: PatientPageProps) => {
       <br />
       occupation: {patient.occupation}
 
-      {formOpen && <AddEntryForm onClose={closeForm} onSubmit={submitNewEntry} error={error} setError={setError} />}
+      {formOpen && <AddEntryForm diagnoses={diagnoses} onClose={closeForm} onSubmit={submitNewEntry} error={error} setError={setError} />}
       {!formOpen && <p><Button variant="contained" onClick={() => openForm()}>Add New Entry</Button></p> }
       
       <h3>entries</h3>

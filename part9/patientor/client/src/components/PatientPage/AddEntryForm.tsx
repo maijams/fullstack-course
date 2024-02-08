@@ -1,16 +1,17 @@
 import { useState, SyntheticEvent } from 'react';
-import { EntryType, EntryWithoutId, HealthCheckRating } from '../../types';
-import { Grid, SelectChangeEvent, Alert } from '@mui/material';
+import { Diagnosis, EntryType, EntryWithoutId, HealthCheckRating } from '../../types';
+import { Grid, SelectChangeEvent, Alert, Autocomplete } from '@mui/material';
 import { Box, FormControl, InputLabel, MenuItem, Select, TextField, Button } from '@mui/material';
 
 interface Props {
+  diagnoses: Diagnosis[];
   onClose: () => void;
   onSubmit: (values: EntryWithoutId) => void;
   error?: string;
   setError: React.Dispatch<React.SetStateAction<string>>
 }
 
-const AddEntryForm = ({ onClose, onSubmit, error, setError }: Props) => {
+const AddEntryForm = ({ diagnoses, onClose, onSubmit, error, setError }: Props) => {
   const [type, setType] = useState(EntryType.Hospital);
   const [description, setDescription] = useState('');
   const [date, setDate] = useState('');
@@ -76,6 +77,7 @@ const AddEntryForm = ({ onClose, onSubmit, error, setError }: Props) => {
       };
     }
     onSubmit(entryValues as EntryWithoutId);
+    setError('');
   };
 
   return (
@@ -103,9 +105,9 @@ const AddEntryForm = ({ onClose, onSubmit, error, setError }: Props) => {
           value={description}
           onChange={({ target }) => setDescription(target.value)}
         />
+        <InputLabel id="date-label">Date</InputLabel>
         <TextField
-          label="Date"
-          placeholder="YYYY-MM-DD"
+          type='date'
           fullWidth
           value={date}
           onChange={({ target }) => setDate(target.value)}
@@ -116,17 +118,24 @@ const AddEntryForm = ({ onClose, onSubmit, error, setError }: Props) => {
           value={specialist}
           onChange={({ target }) => setSpecialist(target.value)}
         />
-        <TextField
-          label="Diagnosis codes"
-          fullWidth
+        <Autocomplete
+          multiple
+          id="diagnosis-codes-auto"
+          options={diagnoses.map((option) => option.code)}
           value={diagnosisCodes}
-          onChange={({ target }) => setDiagnosisCodes(target.value.split(','))}
+          onChange={(_event, newValue) => setDiagnosisCodes(newValue)}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Diagnosis codes"
+            />
+          )}
         />
         {type === EntryType.Hospital && (
           <>
+            <InputLabel id="dischargeDate-label">Discharge date</InputLabel>
             <TextField
-              label="Discharge date"
-              placeholder="YYYY-MM-DD"
+              type='date'
               fullWidth
               value={dischargeDate}
               onChange={({ target }) => setDischargeDate(target.value)}
@@ -143,7 +152,6 @@ const AddEntryForm = ({ onClose, onSubmit, error, setError }: Props) => {
           <FormControl fullWidth style={{ marginTop: 15 }}>
             <InputLabel id="health-check-rating-label" >Health Check Rating</InputLabel>
             <Select
-              labelId="health-check-rating-label"
               id="health-check-rating"
               value={healthCheckRating.toString()}
               label="Health Check Rating"
@@ -165,16 +173,16 @@ const AddEntryForm = ({ onClose, onSubmit, error, setError }: Props) => {
               value={employerName}
               onChange={({ target }) => setEmployerName(target.value)}
             />
+            <InputLabel id="sick-leave-start-label">Sick leave start date</InputLabel>
             <TextField
-              label="Sick leave start date"
-              placeholder="YYYY-MM-DD"
+              type='date'
               fullWidth
               value={sickLeaveStartDate}
               onChange={({ target }) => setSickLeaveStartDate(target.value)}
             />
+            <InputLabel id="sick-leave-end-label">Sick leave start date</InputLabel>
             <TextField
-              label="Sick leave end date"
-              placeholder="YYYY-MM-DD"
+              type='date'
               fullWidth
               value={sickLeaveEndDate}
               onChange={({ target }) => setSickLeaveEndDate(target.value)}
