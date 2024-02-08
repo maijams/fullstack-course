@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import Box from '@mui/material/Box';
+import { Button } from "@mui/material";
 import { Favorite } from '@mui/icons-material';
-import { Patient, Diagnosis, Entry, HospitalEntry, HealthCheckEntry, OccupationalHealthcareEntry } from "../../types";
+import axios from "axios";
+import { Patient, Diagnosis, Entry, HospitalEntry, HealthCheckEntry, OccupationalHealthcareEntry, EntryWithoutId } from "../../types";
 import patientService from "../../services/patients";
+import AddEntryForm from "./AddEntryForm";
 
 interface PatientPageProps {
   patientId: string;
@@ -64,6 +67,11 @@ const EntryDetails: React.FC<{ entry: Entry }> = ({ entry }) => {
 
 const PatientPage = ({ patientId, diagnoses }: PatientPageProps) => {
   const [patient, setPatient] = useState<Patient | null>(null);
+  const [formOpen, setFormOpen] = useState<boolean>(false);
+  const [error, setError] = useState<string>();
+
+  const openForm = (): void => setFormOpen(true);
+  const closeForm = (): void => setFormOpen(false);
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -77,6 +85,29 @@ const PatientPage = ({ patientId, diagnoses }: PatientPageProps) => {
     return null;
   }
 
+  const submitNewEntry = async (values: EntryWithoutId) => {
+    try {
+      const entry = await patientService.addEntry(patient.id, values);
+      patient.entries.push(entry);
+      setPatient(patient);
+      setFormOpen(false);
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e)) {
+        if (e?.response?.data && typeof e?.response?.data === "string") {
+          const message = e.response.data.replace('Something went wrong. Error: ', '');
+          console.error(message);
+          setError(message);
+        } 
+        else {
+          setError("Unrecognized axios error");
+        }
+      } else {
+        console.error("Unknown error", e);
+        setError("Unknown error");
+      }
+    }
+  };
+
   return (
     <div>
       <h2>{patient.name}</h2>
@@ -85,6 +116,10 @@ const PatientPage = ({ patientId, diagnoses }: PatientPageProps) => {
       ssn: {patient.ssn}
       <br />
       occupation: {patient.occupation}
+
+      {formOpen && <AddEntryForm onClose={closeForm} onSubmit={submitNewEntry} error={error} setError={setError} />}
+      {!formOpen && <p><Button variant="contained" onClick={() => openForm()}>Add New Entry</Button></p> }
+      
       <h3>entries</h3>
       {patient.entries.map((entry) => (
         <Box key={entry.id} border={1} borderRadius={2} padding={2} style={{ marginBottom: 10 }}>
